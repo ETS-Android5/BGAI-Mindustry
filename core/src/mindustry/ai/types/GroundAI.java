@@ -19,11 +19,11 @@ public class GroundAI extends AIController{
         // Teamc target= unit.closestTarget(unit.team, unit.x, unit.y, unit.type.range);
         // System.out.println("core: "+core);
         // System.out.println("target "+target);
-        Unit friend = closestFriendly(unit.x, unit.y, unit.type.range, true, true);
-        // if (friend!=null && friend.type.range < unit.type.range) {
-        //     // target = target(closest.x, closest.y, closest.type.range, true, true);
-        //     System.out.println("Closest Friendly unit "+friend+" "+friend.x+" "+friend.y);
-        // }
+        Unit friend = closestFriendly2(unit, unit.x, unit.y, unit.type.range, true, true);
+        if (friend!=null  && unit.type.range > friend.type.range) {
+            // target = target(closest.x, closest.y, closest.type.range, true, true);
+            System.out.println("Closest Friendly unit "+unit.type.range+" "+friend.type.range);
+        }
         // else{
             // System.out.println("No closest Friendly unit "+(friend!=null )+friend.type.range+','+unit.type.range);
         // }
@@ -80,16 +80,14 @@ public class GroundAI extends AIController{
             //     if(spawner != null && unit.within(spawner, state.rules.dropZoneRadius + 120f)) move = false;
             // }
             // System.out.println("move: "+move+" unit.move "+unit.team+" unit.type.range "+unit.type.range);
-            if(move) pathfind(Pathfinder.fieldCore);
         }
         else if(friend!=null && friend.type.range < unit.type.range) {
             boolean move = true;
-            Tile new_target = targetXY(friend.x, friend.y, BlockFlag.rally, false);
-
-            if(new_target != null){
+            if(friend != null){
                 System.out.println("Moving to frinedly unit");
                 // pathfind(Pathfinder.fieldRally);
-                moveTo(new_target, 100f);
+                // moveBehind(friend, friend, 0.1f);
+                moveTo(friend, 1f);
             }
         }
         else if(core != null && unit.within(core, unit.range() / 1.3f + core.block.size * tilesize / 2f)){

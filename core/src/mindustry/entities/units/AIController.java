@@ -191,6 +191,10 @@ public class AIController implements UnitController{
         return Units.closestFriendlyUnit(unit.team, x, y, range, u -> u.checkTarget(air, ground), t -> ground);
     }
 
+    public Unit closestFriendly2(Unit unit1, float x, float y, float range, boolean air, boolean ground){
+        return Units.closestFriendlyUnit2(unit1, unit.team, x, y, range, u -> u.checkTarget(air, ground), t -> ground);
+    }
+
     public boolean retarget(){
         return timer.get(timerTarget, target == null ? 40 : 90);
     }
@@ -245,18 +249,42 @@ public class AIController implements UnitController{
         if(target == null) return;
 
         vec.set(target).sub(unit);
-
+        System.out.println("circleLength: " + circleLength);
         float length = circleLength <= 0.001f ? 1f : Mathf.clamp((unit.dst(target) - circleLength) / smooth, -1f, 1f);
-
+        
         vec.setLength(unit.speed() * length);
         if(length < -0.5f){
             vec.rotate(180f);
         }else if(length < 0){
             vec.setZero();
         }
-
+        System.out.println("directino: " + vec+','+length);
         unit.moveAt(vec);
     }
+
+    // public void moveBehind(Unit target, Position target, float circleLength){
+    //     moveTo(target, circleLength, 100f);
+    // }
+
+    // public void moveBehind(Unit target, Position target, float circleLength, float smooth){
+    //     if(target == null) return;
+
+    //     Vec2 direction = unit.vel().unit().rotate(180f).scale(2f);
+
+
+    //     vec.set(target).sub(unit);
+    //     System.out.println("circleLength: " + circleLength);
+    //     float length = circleLength <= 0.001f ? 1f : Mathf.clamp((unit.dst(target) - circleLength) / smooth, -1f, 1f);
+        
+    //     vec.setLength(unit.speed() * length);
+    //     if(length < -0.5f){
+    //         vec.rotate(180f);
+    //     }else if(length < 0){
+    //         vec.setZero();
+    //     }
+    //     System.out.println("directino: " + vec+','+length);
+    //     unit.moveAt(vec.add(direction));
+    // }
 
     @Override
     public void unit(Unit unit){

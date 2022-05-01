@@ -223,6 +223,17 @@ public class Units{
         }
     }
 
+    public static Unit closestFriendlyUnit2(Unit unit1, Team team, float x, float y, float range, Boolf<Unit> unitPred, Boolf<Building> tilePred){
+        if(team == Team.derelict) return null;
+
+        Unit unit = closest2(unit1, team, x, y, range, unitPred);
+        if(unit != null){
+            return unit;
+        }else{
+            return null;
+        }
+    }
+
     /** Returns the closest target enemy. First, units are checked, then buildings. */
     public static Teamc bestTarget(Team team, float x, float y, float range, Boolf<Unit> unitPred, Boolf<Building> tilePred, Sortf sort){
         if(team == Team.derelict) return null;
@@ -311,6 +322,23 @@ public class Units{
         return result;
     }
 
+    public static Unit closest2(Unit unit1, Team team, float x, float y, float range, Boolf<Unit> predicate){
+        result = null;
+        cdist = 0f;
+
+        nearbyOtherAlly(unit1, team, x, y, range, e -> {
+            if(!predicate.get(e)) return;
+
+            float dist = e.dst2(x, y);
+            if((result == null || dist < cdist) && dist > 0f){
+                result = e;
+                cdist = dist;
+            }
+        });
+
+        return result;
+    }
+
     /** Returns the closest ally of this team in a range. Filter by predicate. */
     public static Unit closest(Team team, float x, float y, float range, Boolf<Unit> predicate, Sortf sort){
         result = null;
@@ -385,6 +413,21 @@ public class Units{
         nearby(team, x - radius, y - radius, radius*2f, radius*2f, unit -> {
             if(unit.within(x, y, radius + unit.hitSize/2f)){
                 cons.get(unit);
+            }
+        });
+    }
+
+    public static void nearbyOtherAlly(Unit itself, @Nullable Team team, float x, float y, float radius, Cons<Unit> cons){
+        float minRange = 0f;
+        
+        nearby(team, x - radius, y - radius, radius*2f, radius*2f, unit -> {
+            
+            if(unit.within(x, y, radius + unit.hitSize/2f) && 
+            unit.type.range < itself.type.range  
+            && unit.type.range > minRange 
+            ){
+                cons.get(unit);
+                // minRange = unit.type.range;
             }
         });
     }
