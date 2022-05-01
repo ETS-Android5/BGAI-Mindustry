@@ -293,7 +293,7 @@ public class SoundControl{
         //set fade to 1 and play it, stopping the current when it's done
         fade = 1f;
         current = music;
-        current.setVolume(1f);
+        current.setVolume(0.f);
         current.setLooping(false);
         current.play();
     }

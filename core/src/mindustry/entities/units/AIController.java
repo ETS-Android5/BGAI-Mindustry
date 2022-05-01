@@ -78,7 +78,6 @@ public class AIController implements UnitController{
 
     /** For ground units: Looks at the target, or the movement position. Does not apply to non-omni units. */
     public void faceTarget(){
-        System.out.println("faceTarget");
         if(unit.type.omniMovement || unit instanceof Mechc){
             if(!Units.invalidateTarget(target, unit, unit.range()) && unit.type.rotateShooting && unit.type.hasWeapons()){
                 unit.lookAt(Predict.intercept(unit, target, unit.type.weapons.first().bullet.speed));
@@ -149,7 +148,7 @@ public class AIController implements UnitController{
 
             if(mount.target != null){
                 shoot = mount.target.within(mountX, mountY, weapon.bullet.range() + (mount.target instanceof Sized s ? s.hitSize()/2f : 0f)) && shouldShoot();
-                System.out.println("shoot "+shoot);
+
                 Vec2 to = Predict.intercept(unit, mount.target, weapon.bullet.speed);
                 mount.aimX = to.x;
                 mount.aimY = to.y;
@@ -178,8 +177,18 @@ public class AIController implements UnitController{
         return target == null ? null : target.build;
     }
 
+    public Tile targetXY(float x, float y, BlockFlag flag, boolean enemy){
+        if(unit.team == Team.derelict) return null;
+        Tile target = new Tile((int)x, (int)y);
+        return target == null ? null : target;
+    }
+
     public Teamc target(float x, float y, float range, boolean air, boolean ground){
         return Units.closestTarget(unit.team, x, y, range, u -> u.checkTarget(air, ground), t -> ground);
+    }
+
+    public Unit closestFriendly(float x, float y, float range, boolean air, boolean ground){
+        return Units.closestFriendlyUnit(unit.team, x, y, range, u -> u.checkTarget(air, ground), t -> ground);
     }
 
     public boolean retarget(){

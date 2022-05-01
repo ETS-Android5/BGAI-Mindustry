@@ -211,6 +211,18 @@ public class Units{
         }
     }
 
+    /** Returns the closest target enemy. First, units are checked, then tile entities. */
+    public static Unit closestFriendlyUnit(Team team, float x, float y, float range, Boolf<Unit> unitPred, Boolf<Building> tilePred){
+        if(team == Team.derelict) return null;
+
+        Unit unit = closest(team, x, y, range, unitPred);
+        if(unit != null){
+            return unit;
+        }else{
+            return null;
+        }
+    }
+
     /** Returns the closest target enemy. First, units are checked, then buildings. */
     public static Teamc bestTarget(Team team, float x, float y, float range, Boolf<Unit> unitPred, Boolf<Building> tilePred, Sortf sort){
         if(team == Team.derelict) return null;
@@ -272,7 +284,7 @@ public class Units{
             if(!predicate.get(e) || e.team() != team) continue;
 
             float dist = e.dst2(x, y);
-            if(result == null || dist < cdist){
+            if((result == null || dist < cdist) && dist > 0f){
                 result = e;
                 cdist = dist;
             }
@@ -290,7 +302,7 @@ public class Units{
             if(!predicate.get(e)) return;
 
             float dist = e.dst2(x, y);
-            if(result == null || dist < cdist){
+            if((result == null || dist < cdist) && dist > 0f){
                 result = e;
                 cdist = dist;
             }

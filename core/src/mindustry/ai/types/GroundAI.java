@@ -17,8 +17,17 @@ public class GroundAI extends AIController{
         Building core = unit.closestEnemyCore();
         Teamc target= target(unit.x, unit.y, unit.type.range, true, true);
         // Teamc target= unit.closestTarget(unit.team, unit.x, unit.y, unit.type.range);
-        System.out.println("core: "+core);
-        System.out.println("target "+target);
+        // System.out.println("core: "+core);
+        // System.out.println("target "+target);
+        Unit friend = closestFriendly(unit.x, unit.y, unit.type.range, true, true);
+        // if (friend!=null && friend.type.range < unit.type.range) {
+        //     // target = target(closest.x, closest.y, closest.type.range, true, true);
+        //     System.out.println("Closest Friendly unit "+friend+" "+friend.x+" "+friend.y);
+        // }
+        // else{
+            // System.out.println("No closest Friendly unit "+(friend!=null )+friend.type.range+','+unit.type.range);
+        // }
+        
         // if (target != null) {
             
         //     if (target instanceof Building) {
@@ -64,14 +73,24 @@ public class GroundAI extends AIController{
         //     // faceTarget();
         // }
         if((target != null && !unit.within(target, unit.type.range*0.5f)) && command() == UnitCommand.attack){
-                    boolean move = false;
+                boolean move = false;
 
             // if(state.rules.waves && unit.team == state.rules.defaultTeam){
             //     Tile spawner = getClosestSpawner();
             //     if(spawner != null && unit.within(spawner, state.rules.dropZoneRadius + 120f)) move = false;
             // }
-            System.out.println("move: "+move+" unit.move "+unit.team+" unit.type.range "+unit.type.range);
+            // System.out.println("move: "+move+" unit.move "+unit.team+" unit.type.range "+unit.type.range);
             if(move) pathfind(Pathfinder.fieldCore);
+        }
+        else if(friend!=null && friend.type.range < unit.type.range) {
+            boolean move = true;
+            Tile new_target = targetXY(friend.x, friend.y, BlockFlag.rally, false);
+
+            if(new_target != null){
+                System.out.println("Moving to frinedly unit");
+                // pathfind(Pathfinder.fieldRally);
+                moveTo(new_target, 100f);
+            }
         }
         else if(core != null && unit.within(core, unit.range() / 1.3f + core.block.size * tilesize / 2f)){
             target = core;
@@ -82,8 +101,6 @@ public class GroundAI extends AIController{
             }
         }
         
-        
-
         else if((core == null || !unit.within(core, unit.type.range*0.5f)) && command() == UnitCommand.attack){
             boolean move = true;
 
@@ -91,7 +108,7 @@ public class GroundAI extends AIController{
                 Tile spawner = getClosestSpawner();
                 if(spawner != null && unit.within(spawner, state.rules.dropZoneRadius + 120f)) move = false;
             }
-            System.out.println("move: "+move+" unit.move "+unit.team+" unit.type.range "+unit.type.range);
+            // System.out.println("move: "+move+" unit.move "+unit.team+" unit.type.range "+unit.type.range);
             if(move) pathfind(Pathfinder.fieldCore);
         }
 

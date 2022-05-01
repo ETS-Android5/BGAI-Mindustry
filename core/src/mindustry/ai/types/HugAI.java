@@ -27,7 +27,7 @@ public class HugAI extends AIController{
                 }
             }
         }
-        
+
         if(command() == UnitCommand.attack){
             boolean move = true;
 
@@ -45,7 +45,7 @@ public class HugAI extends AIController{
                 }
                 return false;
             })){
-                if(unit.within(target, (unit.hitSize + (target instanceof Sized s ? s.hitSize() : 1f)) * 1.0f)){
+                if(unit.within(target, (unit.hitSize + (target instanceof Sized s ? s.hitSize() : 1f)) * 0.6f)){
                     //circle target
                     unit.movePref(vec.set(target).sub(unit).rotate(90f).setLength(unit.speed()));
                 }else{

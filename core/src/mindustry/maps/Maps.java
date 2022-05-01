@@ -462,12 +462,9 @@ public class Maps{
         }
         return customMapDirectory.child("map_" + i + "." + mapExtension);
     }
-//    Fi newMap= new Fi("fortress.msav");
-// Fi newMap = Core.files.internal("maps/" + defaultMapNames[1] + "." + mapExtension);
+
     private Map loadMap(Fi file, boolean custom) throws IOException{
-//        Fi newMap= new Fi("D:\\NCSU\\SEM 2\\GameAI\\Mindustry-master\\core\\assets\\maps\\fortress.msav");
-//        Fi newMap = Core.files.internal("maps/" + defaultMapNames[1] + "." + mapExtension);
-        // Map map = MapIO.createMap(newMap, custom);
+        // file =  Core.files.internal("maps/craters.msav");
         Map map = MapIO.createMap(file, custom);
 
         if(map.name() == null){
