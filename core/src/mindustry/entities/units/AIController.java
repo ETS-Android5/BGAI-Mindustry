@@ -78,10 +78,6 @@ public class AIController implements UnitController{
 
     /** For ground units: Looks at the target, or the movement position. Does not apply to non-omni units. */
     public void faceTarget(){
-<<<<<<< Updated upstream
-        System.out.println("faceTarget");
-=======
->>>>>>> Stashed changes
         if(unit.type.omniMovement || unit instanceof Mechc){
             if(!Units.invalidateTarget(target, unit, unit.range()) && unit.type.rotateShooting && unit.type.hasWeapons()){
                 unit.lookAt(Predict.intercept(unit, target, unit.type.weapons.first().bullet.speed));
@@ -103,15 +99,6 @@ public class AIController implements UnitController{
 
     public void pathfind(int pathTarget){
         int costType = unit.pathType();
-<<<<<<< Updated upstream
-=======
-
-        Tile tile = unit.tileOn();
-        if(tile == null) return;
-        Tile targetTile = pathfinder.getTargetTile(tile, pathfinder.getField(unit.team, costType, pathTarget));
-
-        if(tile == targetTile || (costType == Pathfinder.costNaval && !targetTile.floor().isLiquid)) return;
->>>>>>> Stashed changes
 
         Tile tile = unit.tileOn();
         if(tile == null) return;
@@ -120,6 +107,28 @@ public class AIController implements UnitController{
         if(tile == targetTile || (costType == Pathfinder.costNaval && !targetTile.floor().isLiquid)) return;
 
         unit.movePref(vec.trns(unit.angleTo(targetTile.worldx(), targetTile.worldy()), unit.speed()));
+    }
+
+    public void pathfind(int pathTarget, boolean[] neighborInRange, int[] neighbordDist) {
+        int costType = unit.pathType();
+        System.out.println("in pathfind-> pathTarget= " + pathTarget);
+        System.out.println("in pathfind-> costType= " + costType);
+        Tile tile = unit.tileOn();
+        if (tile == null)
+            return;
+        Tile targetTile = pathfinder.getTargetTile(tile, pathfinder.getField(unit.team, costType, pathTarget),
+                neighborInRange, neighbordDist);
+        System.out.println("in pathfind-> targetTile= " + targetTile.x + " " + targetTile.y);
+
+        if (tile == targetTile || (costType == Pathfinder.costNaval && !targetTile.floor().isLiquid))
+            return;
+
+        // while (unit.tileOn() != targetTile) {
+        // unit.movePref(vec.trns(unit.angleTo(targetTile.worldx(),
+        // targetTile.worldy()), unit.speed()));
+        // }
+        unit.movePref(vec.trns(unit.angleTo(targetTile.worldx(), targetTile.worldy()), unit.speed()));
+        System.out.println("final tile= " + unit.tileOn().x + " " + unit.tileOn().y);
     }
 
     public void updateWeapons(){
@@ -161,11 +170,7 @@ public class AIController implements UnitController{
 
             if(mount.target != null){
                 shoot = mount.target.within(mountX, mountY, weapon.bullet.range() + (mount.target instanceof Sized s ? s.hitSize()/2f : 0f)) && shouldShoot();
-<<<<<<< Updated upstream
-                System.out.println("shoot "+shoot);
-=======
 
->>>>>>> Stashed changes
                 Vec2 to = Predict.intercept(unit, mount.target, weapon.bullet.speed);
                 mount.aimX = to.x;
                 mount.aimY = to.y;
@@ -194,21 +199,16 @@ public class AIController implements UnitController{
         return target == null ? null : target.build;
     }
 
-<<<<<<< Updated upstream
-=======
     public Tile targetXY(float x, float y, BlockFlag flag, boolean enemy){
         if(unit.team == Team.derelict) return null;
         Tile target = new Tile((int)x, (int)y);
         return target == null ? null : target;
     }
 
->>>>>>> Stashed changes
     public Teamc target(float x, float y, float range, boolean air, boolean ground){
         return Units.closestTarget(unit.team, x, y, range, u -> u.checkTarget(air, ground), t -> ground);
     }
 
-<<<<<<< Updated upstream
-=======
     public Unit closestFriendly(float x, float y, float range, boolean air, boolean ground){
         return Units.closestFriendlyUnit(unit.team, x, y, range, u -> u.checkTarget(air, ground), t -> ground);
     }
@@ -217,7 +217,6 @@ public class AIController implements UnitController{
         return Units.closestFriendlyUnit2(unit1, unit.team, x, y, range, u -> u.checkTarget(air, ground), t -> ground);
     }
 
->>>>>>> Stashed changes
     public boolean retarget(){
         return timer.get(timerTarget, target == null ? 40 : 90);
     }
