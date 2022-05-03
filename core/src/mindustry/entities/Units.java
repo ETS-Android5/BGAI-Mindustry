@@ -23,6 +23,7 @@ public class Units{
     private static boolean boolResult;
     private static int intResult;
     private static Building buildResult;
+    private static float minRange = 0f;
 
     @Remote(called = Loc.server)
     public static void unitCapDeath(Unit unit){
@@ -211,6 +212,32 @@ public class Units{
         }
     }
 
+<<<<<<< Updated upstream
+=======
+    /** Returns the closest target enemy. First, units are checked, then tile entities. */
+    public static Unit closestFriendlyUnit(Team team, float x, float y, float range, Boolf<Unit> unitPred, Boolf<Building> tilePred){
+        if(team == Team.derelict) return null;
+
+        Unit unit = closest(team, x, y, range, unitPred);
+        if(unit != null){
+            return unit;
+        }else{
+            return null;
+        }
+    }
+
+    public static Unit closestFriendlyUnit2(Unit unit1, Team team, float x, float y, float range, Boolf<Unit> unitPred, Boolf<Building> tilePred){
+        if(team == Team.derelict) return null;
+
+        Unit unit = closest2(unit1, team, x, y, range, unitPred);
+        if(unit != null){
+            return unit;
+        }else{
+            return null;
+        }
+    }
+
+>>>>>>> Stashed changes
     /** Returns the closest target enemy. First, units are checked, then buildings. */
     public static Teamc bestTarget(Team team, float x, float y, float range, Boolf<Unit> unitPred, Boolf<Building> tilePred, Sortf sort){
         if(team == Team.derelict) return null;
@@ -272,7 +299,11 @@ public class Units{
             if(!predicate.get(e) || e.team() != team) continue;
 
             float dist = e.dst2(x, y);
+<<<<<<< Updated upstream
             if(result == null || dist < cdist){
+=======
+            if((result == null || dist < cdist) && dist > 0f){
+>>>>>>> Stashed changes
                 result = e;
                 cdist = dist;
             }
@@ -288,9 +319,32 @@ public class Units{
 
         nearby(team, x, y, range, e -> {
             if(!predicate.get(e)) return;
+<<<<<<< Updated upstream
 
             float dist = e.dst2(x, y);
             if(result == null || dist < cdist){
+=======
+
+            float dist = e.dst2(x, y);
+            if((result == null || dist < cdist) && dist > 0f){
+                result = e;
+                cdist = dist;
+            }
+        });
+
+        return result;
+    }
+
+    public static Unit closest2(Unit unit1, Team team, float x, float y, float range, Boolf<Unit> predicate){
+        result = null;
+        cdist = 0f;
+
+        nearbyOtherAlly(unit1, team, x, y, range, e -> {
+            if(!predicate.get(e)) return;
+
+            float dist = e.dst2(x, y);
+            if((result == null || dist < cdist) && dist > 0f){
+>>>>>>> Stashed changes
                 result = e;
                 cdist = dist;
             }
@@ -372,7 +426,25 @@ public class Units{
     public static void nearby(@Nullable Team team, float x, float y, float radius, Cons<Unit> cons){
         nearby(team, x - radius, y - radius, radius*2f, radius*2f, unit -> {
             if(unit.within(x, y, radius + unit.hitSize/2f)){
+<<<<<<< Updated upstream
+=======
                 cons.get(unit);
+            }
+        });
+    }
+
+    public static void nearbyOtherAlly(Unit itself, @Nullable Team team, float x, float y, float radius, Cons<Unit> cons){
+        minRange = 0f;
+        
+        nearby(team, x - radius, y - radius, radius*2f, radius*2f, unit -> {
+            
+            if(unit.within(x, y, radius + unit.hitSize/2f) && 
+            unit.type.range < itself.type.range  
+            && unit.type.range > minRange 
+            ){
+>>>>>>> Stashed changes
+                cons.get(unit);
+                minRange = unit.type.range;
             }
         });
     }
